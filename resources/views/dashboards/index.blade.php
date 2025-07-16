@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="utf-8">
-    <title>BENEDMS</title>
+    <title>UASTEDMS</title>
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <meta content="" name="keywords">
     <meta content="" name="description">
@@ -116,15 +116,15 @@
                         <img src="{{ asset('logos/' . $userTenant->logo) }}" alt="logo"
                             style="width: 70px; height: 70px;">
                     @elseif (isset($userTenant) && $userTenant->logo == null)
-                        <img src="{{ asset('landing/images/benue_new_logo.svg') }}" alt="logo"
+                        <img src="{{ asset('landing/images/uastLogo.jpeg') }}" alt="logo"
                             style="width: 70px; height: 70px;">
                     @else
-                        <img src="{{ asset('landing/images/benue_new_logo.svg') }}" alt="logo"
+                        <img src="{{ asset('landing/images/uastLogo.jpeg') }}" alt="logo"
                             style="width: 70px; height: 70px;">
                     @endif
 
                     <div class="ms-3">
-                        <h5 class="mb-0" style="font-weight: bold;">BENEDMS </h5>
+                        <h5 class="mb-0" style="font-weight: bold;">UASTEDMS </h5>
                         @if (isset($userTenant) && $userTenant->code != null)
                             <small class="text-muted"> {{ $userTenant->code }}</small>
                         @endif

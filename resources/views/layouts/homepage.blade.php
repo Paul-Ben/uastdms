@@ -103,8 +103,8 @@
                     </div> -->
                     <div class="d-flex text-start">
                         <a href="#" class="text-light me-2"><img
-                                src="{{ asset('landing/images/uastLogo.jpeg') }}" width="65"></a> Benue
-                        State Government
+                                src="{{ asset('landing/images/uastLogo.jpeg') }}" width="65"></a> University
+                        of Agriculture, Science and Technology Ihuh
                         Electronic Document Management System
                     </div>
                 </div>

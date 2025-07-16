@@ -9,7 +9,7 @@
                 <!-- First column, takes up 12 columns on extra small screens, 6 on medium and above -->
                 <div class="col-12 col-md-8">
                     <div class="">
-                        <p class="subtitle ">Benue State Government</p>
+                        <p class="subtitle ">UASTEDMS</p>
                         <p class="title font-400">Electronic Document Management System</p>
                         <p class="slogan">Efficient Document Management System, tailored for modern workflows</p>
                         <div class="d-flex mtop-4">
@@ -28,7 +28,7 @@
                     <div class="p-3  ">
                         <!-- <img src="images/vector_shape1.svg"
                                                         style="z-index: 5; position: absolute; margin-top: 318px; left: 1000.85px;"> -->
-                        <img src="{{ asset('landing/images/benue_new_logo.svg') }}" width="343" height="382"
+                        <img src="{{ asset('landing/images/uastLogo.jpeg') }}" width="343" height="382"
                             class="w-300">
                     </div>
                 </div>
@@ -44,7 +44,7 @@
 
                 <div class="col-12 col-md-6">
                     <div class="p-3">
-                        <img src="{{ asset('landing/images/Gov Alia-2.png') }}" width="443" height="" class="w-300"
+                        <img src="{{ asset('landing/images/Gov Alia-2.png') }}" width="453" height="" class="w-300"
                             style="border-radius: 1em;">
                     </div>
                 </div>
@@ -53,11 +53,11 @@
                     <div class="p-3 ">
                         <div class="">
                             <p class="title" style="display: inline;">About </p><span
-                                style="display: inline; font-size:45px; font-weight:500">BENEDMS</span>
+                                style="display: inline; font-size:45px; font-weight:500">UASTEDMS</span>
                         </div>
-                        <p class="body-text" style="">The Benue State Electronic Document Management System (BENEDMS)
+                        <p class="body-text" style="">The University of Agriculture Science and Technology Electronic Documnet Management System (UASTEDMS)
                             is a cutting-edge digital platform designed to revolutionize document processing, storage, and
-                            retrieval across government ministries, departments, and agencies (MDAs) in Benue State. Our
+                            retrieval across departments, directorates and units  in the University. Our
                             system enhances efficiency, transparency, and security in government operations by transitioning
                             from manual documentation to a fully automated, paperless system.
                         </p>
@@ -88,18 +88,17 @@
                                 processing
                                 from the comfort of your home to any of
                                 the
-                                ministries or agencies within the Benue State Civil Service. This service ensures that
+                                departments, directorates and units in the University. This service ensures that
                                 your
                                 document gets the required attention in real time with dispatch and professionalism.
                             </p>
-                            <p class="body-text text-justify" style="text-align: justify;">The Government of Benue
-                                State wants to digitize her services to make life easier and more comfortable for her
-                                citizenry. This electronic document filling system makes your documents get submitted to
-                                any Benue State Civil Service office without needing your physical presence to visit
+                            <p class="body-text text-justify" style="text-align: justify;">The University wants to digitize her services to make life easier and more comfortable for her
+                                staff and students. This electronic document filling system makes your documents get submitted to
+                                any department, directorate and unit within the university without needing your physical presence to visit
                                 that office.
                             </p>
                             <p class="body-text text-justify" style="text-align: justify;">Take for instance, you can
-                                stay anywhere and request for your Benue State of Origin Certificate without you
+                                stay anywhere and request for your statement of result or Certificate without you
                                 visiting any physical office.
                             </p>
                             <p class="body-text">Play the video embedded here to learn more...</p>

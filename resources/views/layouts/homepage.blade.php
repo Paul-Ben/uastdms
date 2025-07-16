@@ -35,7 +35,7 @@
     <!-- Navigation Start -->
     <nav class="navbar navbar-expand-lg  lg bg-body-tertiary ">
         <div class="container ">
-            <a class="navbar-brand" href="#"><img src="{{ asset('landing/images/benue_new_logo.svg') }}"
+            <a class="navbar-brand" href="#"><img src="{{ asset('landing/images/uastLogo.jpeg') }}"
                     style="border-radius: 1em" alt="e-filling-logo" height="50"></a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
                 data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
@@ -103,7 +103,7 @@
                     </div> -->
                     <div class="d-flex text-start">
                         <a href="#" class="text-light me-2"><img
-                                src="{{ asset('landing/images/benue_new_logo.svg') }}" width="65"></a> Benue
+                                src="{{ asset('landing/images/uastLogo.jpeg') }}" width="65"></a> Benue
                         State Government
                         Electronic Document Management System
                     </div>

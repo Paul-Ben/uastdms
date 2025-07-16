@@ -20,7 +20,7 @@
             <div class="col-md-8 mx-auto ">
                 <div class="contact-form mtop-small-150">
 
-                    <div class="text-center"><img src="{{ asset('landing/images/benue_new_logo.svg') }}" width="100"
+                    <div class="text-center"><img src="{{ asset('landing/images/uastLogo.jpeg') }}" width="100"
                             height="100" alt="benue_logo"></div>
                     <h2 class="mb-4 text-center"><span style="color: #0C4F24;">Register</span></h2>
                     <p class="sub-title py-3 text-center">Benue State Government Electronic Document Management System</p>

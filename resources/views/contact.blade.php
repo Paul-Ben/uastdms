@@ -33,7 +33,7 @@
                 </div>
             </div>
             <div class="col-md-6 p-5 justify-content-center text-center d-flex">
-                <img src="{{asset('landing/images/ode1.png')}}" alt="Contact Image" width="" class="img-fluid">
+                <img src="{{asset('landing/images/VC.jpg')}}" alt="Contact Image" width="" class="img-fluid">
             </div>
 
         </div>

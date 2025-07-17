@@ -21,7 +21,9 @@
                     <div class="text-center"><img src="{{ asset('landing/images/uastLogo.jpeg') }}" width="100"
                             height="100" alt="benue_logo"></div>
                     <h2 class="mb-4 text-center"><span style="color: #0C4F24;">Login</span></h2>
-                    <p class="sub-title py-3">Benue State Government Electronic Document Management System</p>
+                    <div class="text-center">
+                    <p class="sub-title py-3">UAST Electronic Document Management System</p>
+                    </div>
                     @php
                         $lockoutSeconds = null;
                         foreach ($errors->all() as $error) {

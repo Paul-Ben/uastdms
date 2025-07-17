@@ -27,7 +27,7 @@ class UserSeeder extends Seeder
 
         // Create an Admin User
         $admin = User::create([
-            'name' => 'Ephraim Tarfa',
+            'name' => 'Prof. Qrisstuberg Amua',
             'email' => 'testuser1@bdic.ng',
             'password' => bcrypt('BdicDev2025'),
             'default_role' => 'Admin',
@@ -39,7 +39,7 @@ class UserSeeder extends Seeder
 
         // Create an Staff User
         $admin = User::create([
-            'name' => 'Godfrey Ejeh',
+            'name' => 'Dr. J. Echor',
             'email' => 'testuser2@bdic.ng',
             'password' => bcrypt('BdicDev2025'),
             'default_role' => 'Admin',

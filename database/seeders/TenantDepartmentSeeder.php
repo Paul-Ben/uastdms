@@ -50,7 +50,7 @@ class TenantDepartmentSeeder extends Seeder
 
         ]);
         $tenant = TenantDepartment::create([
-            'name' => 'Office of the Head of Service',
+            'name' => 'Office of the Vice Chancellor',
             'email' => 'bmdt@bnsg.com',
             'phone' => '09087767543',
             'status' => 'active',
@@ -58,7 +58,7 @@ class TenantDepartmentSeeder extends Seeder
 
         ]);
         $tenant = TenantDepartment::create([
-            'name' => 'Office of the MD Benue Hospitals Management Board',
+            'name' => 'Office of the Registrar',
             'email' => 'hmb@bnsg.com',
             'phone' => '09087767543',
             'status' => 'active',

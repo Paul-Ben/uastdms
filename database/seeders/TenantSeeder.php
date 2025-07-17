@@ -34,12 +34,12 @@ class TenantSeeder extends Seeder
                 'status' => 'Active',
             ],
             [
-                'name' => 'Office of the Head of Service',
+                'name' => 'Office of the Vice Chancellor',
                 'email' => 'hos@bnsg.com',
                 'phone' => '08034522453',
                 'category' => 'Ministry',
                 'code' => 'HOS',
-                'address' => 'Responsible for Women Affairs.',
+                'address' => 'Responsible for UAST.',
                 'status' => 'Active',
             ],
             [
@@ -286,12 +286,12 @@ class TenantSeeder extends Seeder
                 'status' => 'Active',
             ],
             [
-                'name' => 'Benue State Hospitals Management Board.',
+                'name' => 'Office of the Registrar.',
                 'email' => 'me11@bnsg.com',
                 'phone' => '08034522453',
                 'category' => 'Agency',
                 'code' => 'BSHMB',
-                'address' => 'Responsible for State Hospitals Management.',
+                'address' => 'Responsible for UAST Registry.',
                 'status' => 'Active',
             ],
             [
@@ -304,12 +304,12 @@ class TenantSeeder extends Seeder
                 'status' => 'Active',
             ],
             [
-                'name' => 'Benue State Bureau of Statistics.',
+                'name' => 'Office of the Bursar.',
                 'email' => 'bsbs@bnsg.com',
                 'phone' => '08034522453',
                 'category' => 'Agency',
                 'code' => 'BSBS',
-                'address' => 'Responsible for State Statistics.',
+                'address' => 'Responsible for UAST Bursary.',
                 'status' => 'Active',
             ],
             [

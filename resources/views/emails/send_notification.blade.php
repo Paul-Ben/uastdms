@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Welcome To BENGEDMS </title>
+    <title>Welcome To UASTEDMS </title>
 
     <style>
         body {
@@ -71,7 +71,7 @@
 <body>
     <div class="container">
         <div class="header">
-            <img src="https://edms.benuestate.gov.ng/landing/images/benue_new_logo.svg" style="border-radius: 1em" alt="e-filling-logo" height="50" alt="Logo">
+            <img src="https://uast.benuestate.gov.ng/wp-content/uploads/2025/07/UNIVERSITY-OF-AGRICULTURE-SCIENCE-AND-TECHNOLOGY-LOGO-MAIN-1530x1536.png" style="border-radius: 1em" alt="e-filling-logo" height="50" alt="Logo">
         </div>
         <div class="content">
             <p>Dear {{ $senderName }},</p>

@@ -229,7 +229,7 @@
 
                         <!-- International Fields -->
 
-                        <div class="m-2 d-flex justify-content-center">
+                        {{-- <div class="m-2 d-flex justify-content-center">
                             {!! htmlFormSnippet() !!}
 
                             @if ($errors->has('g-recaptcha-response'))
@@ -237,7 +237,7 @@
                                     <small class="text-danger">{{ $errors->first('g-recaptcha-response') }}</small>
                                 </div>
                             @endif
-                        </div>
+                        </div> --}}
 
                         <!-- Submit Button -->
                         <div class="d-flex justify-content-center mb-4">
@@ -249,7 +249,7 @@
                         {{-- <p class="text-center"><small class="text-center text-muted">BENGEDMS Powered by BDIC</small></p> --}}
                     </form>
                     <div class="d-flex justify-content-center mt-2">
-                         <p class="text-center sub-title">BENGEDMS, Powered by </p><a href="https://bdic.ng/" target="__blank"><img
+                         <p class="text-center sub-title">UASTEDMS, Powered by </p><a href="https://bdic.ng/" target="__blank"><img
                     src="{{ asset('landing/images/BDIC logo 1 1.svg') }}"></a>
                     </div>
                    

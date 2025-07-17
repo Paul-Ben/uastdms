@@ -109,10 +109,7 @@
                     </div>
                 </div>
 
-
-
                 <div class="col-md-4 p-4">
-
 
                     <h5>Quick Links</h5>
                     <a href="{{ url('/') }}" class="text-light me-3">Home</a>

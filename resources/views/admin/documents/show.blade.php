@@ -281,15 +281,23 @@
                 height: 8px;
             }
         }
+
+        .message-header:hover {
+            background-color: #f8f9fa;
+        }
+
+        .message-bubble {
+            border-left: 3px solid #0d6efd;
+        }
     </style>
 
     <div class="container-fluid pt-3 pt-md-4 px-2 px-md-3">
         <div class="bg-light rounded p-3 p-md-4">
             <div class="email-container">
                 <div class="toolbar">
-                    
+
                     <a href="{{ route('document.reply', $document_received->document_id) }}" class="text-decoration-none">
-                        <button class="btn">
+                        <button class="btn" type="button">
                             <svg viewBox="0 0 24 24">
                                 <path fill="currentColor" d="M10 9V5l-7 7 7 7v-4.1c5 0 8.5 1.6 11 5.1-1-5-4-10-11-11z" />
                             </svg>
@@ -297,22 +305,17 @@
                             <span class="d-inline d-sm-none">Reply</span>
                         </button>
                     </a>
-                    <a href="{{ route('document.send', $document_received->document_id) }}" class="text-decoration-none">
-                        <button class="btn">
-                            <svg viewBox="0 0 24 24">
-                                <path fill="currentColor" d="M14 9v-4l7 7-7 7v-4.1c-5 0-8.5 1.6-11 5.1 1-5 4-10 11-11z" />
-                            </svg>
-                            <span class="d-none d-sm-inline">Minute the mail</span>
-                            <span class="d-inline d-sm-none">Minute</span>
-                        </button>
-                    </a>
-                    {{-- <button class="btn" type="button" data-toggle="modal" data-target="#forwardedMessageModal">
+
+                    <!-- FIXED: Minute the mail button -->
+                    <button class="btn" type="button" data-toggle="modal" data-target="#sendOptionsModal"
+                        data-document-id="{{ $document_received->document_id }}">
                         <svg viewBox="0 0 24 24">
-                            <path fill="currentColor" d="M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4L9 16.2z" />
+                            <path fill="currentColor" d="M14 9v-4l7 7-7 7v-4.1c-5 0-8.5 1.6-11 5.1 1-5 4-10 11-11z" />
                         </svg>
-                        <span class="d-none d-md-inline">Previous Minuting</span>
-                        <span class="d-inline d-md-none">History</span>
-                    </button> --}}
+                        <span class="d-none d-sm-inline">Minute the mail</span>
+                        <span class="d-inline d-sm-none">Minute</span>
+                    </button>
+
                     <a href="#priviousmiuting">
                         <button class="btn" type="button">
                             <svg viewBox="0 0 24 24">
@@ -324,17 +327,18 @@
                     </a>
 
                     <a href="{{ route('track', $document_received->document_id) }}" class="text-decoration-none">
-                        <button class="btn">
+                        <button class="btn" type="button">
                             <svg viewBox="0 0 24 24">
                                 <path fill="currentColor" d="M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4L9 16.2z" />
                             </svg>
                             Track
                         </button>
                     </a>
+
                     @if ($document_received->attachments->isNotEmpty())
                         <a href="{{ route('getAttachments', $document_received->document_id) }}"
                             class="text-decoration-none">
-                            <button class="btn">
+                            <button class="btn" type="button">
                                 <svg viewBox="0 0 24 24">
                                     <path fill="currentColor" d="M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4L9 16.2z" />
                                 </svg>
@@ -343,18 +347,17 @@
                             </button>
                         </a>
                     @endif
-                    
-                    <a href="{{ route('folders.select', $document_received->document->id) }}" 
-                        class="text-decoration-none"
+
+                    <a href="{{ route('folders.select', $document_received->document->id) }}" class="text-decoration-none"
                         title="Add to folder">
-                         <button class="btn">
+                        <button class="btn" type="button">
                             <i class="fas fa-folder-plus"></i>
                             Add to Folder
-                         </button>
-                     </a>
-                    
+                        </button>
+                    </a>
+
                     <a href="{{ url()->previous() }}" class="text-decoration-none">
-                        <button class="btn">
+                        <button class="btn" type="button">
                             <svg viewBox="0 0 24 24">
                                 <path fill="currentColor" d="M10 9V5l-7 7 7 7v-4.1c5 0 8.5 1.6 11 5.1-1-5-4-10-11-11z" />
                             </svg>
@@ -370,8 +373,6 @@
                         {{ $document_received->document->file_path }}
                         <div id="previewContainer" class="mt-3"
                             style="display: flex; flex-direction: column; height: 90vh; min-height: 300px;">
-                            {{-- <iframe id="pdfPreview" style="width: 100%; height: 800px; min-height: 300px;" frameborder="0"
-                                src="{{ asset('storage/' . $document_received->document->file_path) }}"></iframe> --}}
                             <iframe id="pdfPreview" style="flex: 1 1 auto; height: 1000px; width: 100%; border: none;"
                                 src="{{ asset('storage/' . $document_received->document->file_path) }}">
                             </iframe>
@@ -410,7 +411,7 @@
                     </div>
                 </div>
             </div>
-           
+
             <!-- Previous Minuting Timeline Section -->
             <div class="container py-3 py-md-4">
                 <div class="row justify-content-center">
@@ -437,35 +438,6 @@
                         <!-- Chat-Style Timeline -->
                         <div class="timeline">
                             @foreach ($document_locations as $location)
-                                {{-- <div class="timeline-item">
-                                    <!-- Message Header -->
-                                    <div class="d-flex justify-content-between align-items-start mb-2">
-                                        <div class="d-flex align-items-center">
-                                            <div class="avatar bg-primary text-white rounded-circle mr-2 mr-md-3">
-                                                {{ strtoupper(substr($location->sender->name, 0, 1)) }}
-                                            </div>
-                                            <div>
-                                                <h6 class="mb-0 fw-bold small">{{ $location->sender->name }}</h6>
-                                                <small class="text-muted d-block">
-                                                    {{ $location->sender->userDetail->designation }}
-                                                </small>
-                                            </div>
-                                        </div>
-                                        <small class="text-muted">
-                                            {{ $location->created_at->format('M j, Y g:i A') }}
-                                        </small>
-                                    </div>
-
-                                    <!-- Message Bubble -->
-                                    <div class="message-bubble">
-                                        <p class="mb-2 small">Hi {{ $location->recipient->name }},</p>
-                                        <p class="mb-3 small">{{ $location->message }}</p>
-                                        <small class="text-muted d-block small">
-                                            <i class="fas fa-user-check mr-1"></i>
-                                            Sent to: {{ $location->recipient->name }}
-                                        </small>
-                                    </div>
-                                </div> --}}
                                 <div class="timeline-item">
                                     <!-- Clickable Header (acts as accordion toggle) -->
                                     <div class="message-header d-flex justify-content-between align-items-start mb-2"
@@ -499,16 +471,6 @@
                                         </div>
                                     </div>
                                 </div>
-
-                                <style>
-                                    .message-header:hover {
-                                        background-color: #f8f9fa;
-                                    }
-
-                                    .message-bubble {
-                                        border-left: 3px solid #0d6efd;
-                                    }
-                                </style>
                             @endforeach
                         </div>
                     </div>
@@ -520,12 +482,11 @@
 
                     </div>
                 </div>
-
             </div>
         </div>
     </div>
 
-    <!-- Modal -->
+    <!-- Previous Minutes Modal (unchanged, if you still use it) -->
     <div class="modal fade" id="forwardedMessageModal" tabindex="-1" role="dialog"
         aria-labelledby="forwardedMessageModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg" role="document">
@@ -578,53 +539,59 @@
         </div>
     </div>
 
+    <!-- FIXED: Bootstrap Modal for "Minute the mail" options -->
+    <div class="modal fade" id="sendOptionsModal" tabindex="-1" role="dialog" aria-labelledby="sendOptionsModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="sendOptionsModalLabel">Choose Sending Option</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                {{-- <div class="modal-body">
+                    <p>Would you like to send the document internally or externally?</p>
+                    <button type="button" class="btn btn-secondary mb-2" id="sendInternalBtn">Send Internally</button><br>
+                    <button type="button" class="btn btn-secondary" id="sendExternalBtn">Send Externally</button>
+                </div> --}}
+                <div class="modal-body text-center">
+                    <p>Would you like to send the document internally or externally?</p>
+                    <button type="button" class="btn mb-2" id="sendInternalBtn"
+                        style="background-color: #007bff; color: #fff;">Send Internally</button><br>
+                    <button type="button" class="btn" id="sendExternalBtn"
+                        style="background-color: #007bff; color: #fff;">Send Externally</button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
     <script>
-        function showPreview() {
-            document.getElementById('previewModal').style.display = 'block';
-        }
+        let selectedDocumentId = null;
 
-        function closePreview() {
-            document.getElementById('previewModal').style.display = 'none';
-            const modal = document.getElementById('previewModal');
-            const pdfPreview = document.getElementById('pdfPreview');
+        // Bootstrap modal event to capture the document ID from the button that opened the modal
+        $('#sendOptionsModal').on('show.bs.modal', function(event) {
+            let button = $(event.relatedTarget); // Button that triggered the modal
+            selectedDocumentId = button.data('document-id'); // Extract info from data-* attribute
+        });
 
-            // Clear the iframe source when closing the modal
-            pdfPreview.src = '';
-            modal.style.display = 'none';
-        }
-
-        function replyEmail() {
-            alert('Opening reply composer...');
-        }
-
-        function forwardEmail() {
-            alert('Opening forward composer...');
-        }
-
-        function processEmail() {
-            alert('Processing email...');
-        }
-
-        // Close modal when clicking outside
-        window.onclick = function(event) {
-            const modal = document.getElementById('previewModal');
-            if (event.target == modal) {
-                modal.style.display = 'none';
+        $('#sendInternalBtn').click(function() {
+            if (!selectedDocumentId) {
+                alert("Document ID not found.");
+                return;
             }
-        }
+            const url = "{{ route('document.send', ':id') }}".replace(':id', selectedDocumentId);
+            window.location.href = url;
+        });
 
-        function previewDocument(fileUrl, fileType) {
-            if (fileType === 'pdf') {
-                document.getElementById('imagePreview').style.display = 'none';
-                const pdfPreview = document.getElementById('pdfPreview');
-                pdfPreview.style.display = 'block';
-                pdfPreview.src = fileUrl;
-            } else if (fileType.match(/(jpg|jpeg|png)/)) {
-                document.getElementById('pdfPreview').style.display = 'none';
-                const imagePreview = document.getElementById('imagePreview');
-                imagePreview.style.display = 'block';
-                imagePreview.src = fileUrl;
+        $('#sendExternalBtn').click(function() {
+            if (!selectedDocumentId) {
+                alert("Document ID not found.");
+                return;
             }
-        }
+            const url = "{{ route('document.sendout', ':id') }}".replace(':id', selectedDocumentId);
+            window.location.href = url;
+        });
     </script>
 @endsection

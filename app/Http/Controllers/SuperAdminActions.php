@@ -1326,12 +1326,12 @@ class SuperAdminActions extends Controller
         $userTenant = Tenant::where('id', $userdetails->tenant_id)->first();
         if (Auth::user()->default_role === 'superadmin') {
             $document_received =  FileMovement::with(['sender', 'recipient', 'document'])->where('id', $received)->first();
-
+            
             return view('superadmin.documents.show', compact('document_received', 'authUser', 'userTenant'));
         }
         if (Auth::user()->default_role === 'Admin') {
             $document_received =  FileMovement::with(['sender', 'recipient', 'document', 'attachments'])->where('id', $received)->first();
-
+            
             $document_locations = FileMovement::with(['document', 'sender.userDetail', 'recipient.userDetail.tenant_department'])->where('document_id', $document_received->document_id)->orderBy('updated_at', 'desc')->get();
 
             return view('admin.documents.show', compact('document_received', 'document_locations', 'authUser', 'userTenant'));

@@ -26,7 +26,16 @@
                      <div class="text-center">
                     <p class="sub-title py-3">UAST Electronic Document Management System</p>
                     </div>
-
+                    @if ($errors->any())
+                    <div class="alert alert-danger">
+                        <ul>
+                            @foreach ($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
+                        
+                    @endif
 
                     <form method="POST" action="{{ route('register') }}">
                         @csrf
@@ -231,15 +240,14 @@
 
                         <!-- International Fields -->
 
-                        {{-- <div class="m-2 d-flex justify-content-center">
-                            {!! htmlFormSnippet() !!}
-
+                        <div class="m-2 d-flex justify-content-center">
+                            {!! NoCaptcha::display() !!}
                             @if ($errors->has('g-recaptcha-response'))
                                 <div>
                                     <small class="text-danger">{{ $errors->first('g-recaptcha-response') }}</small>
                                 </div>
                             @endif
-                        </div> --}}
+                        </div>
 
                         <!-- Submit Button -->
                         <div class="d-flex justify-content-center mb-4">
@@ -248,7 +256,6 @@
 
                         <p class="text-center mb-0">Already have an Account? <a href="{{ route('login') }}">Sign In</a>
                         </p>
-                        {{-- <p class="text-center"><small class="text-center text-muted">BENGEDMS Powered by BDIC</small></p> --}}
                     </form>
                     <div class="d-flex justify-content-center mt-2">
                          <p class="text-center sub-title">UASTEDMS, Powered by </p><a href="https://bdic.ng/" target="__blank"><img

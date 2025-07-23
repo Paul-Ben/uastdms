@@ -27,6 +27,7 @@
                     @php
                         $lockoutSeconds = null;
                         foreach ($errors->all() as $error) {
+                           
                             if (preg_match('/(\d+)\s*seconds?/', $error, $matches)) {
                                 $lockoutSeconds = (int) $matches[1];
                                 break;
@@ -38,6 +39,7 @@
                         @if ($errors->any())
                             <div id="lockout-message" class="alert alert-danger mb-0 w-100">
                                 <span id="error-text">{{ $errors->first('email') }}</span>
+                                <span id="error-text">{{ $errors->first('g-recaptcha-response') }}</span>
                                 @if ($lockoutSeconds)
                                     <div>
                                         Try again in <span id="countdown">{{ $lockoutSeconds }}</span> seconds.
@@ -65,11 +67,7 @@
                         </script>
                     @endif
 
-                    {{-- <div class="d-flex align-items-center justify-content-between mb-3">
-                    @if (session('errors'))
-                        <span class="alert alert-danger" role="alert">{{ $errors->first('email') }}</span>
-                    @endif
-                </div> --}}
+
                     <form action="{{ route('login') }}" method="POST">
                         @csrf
                         <!-- Username Input -->
@@ -98,8 +96,8 @@
                             placeholder="Enter your password" autocomplete="current-password" required>
                     </div> --}}
                         <div class="m-2 text-center">
-                            {!! htmlFormSnippet() !!}
-
+                            
+                            {!! NoCaptcha::display() !!}
                             @if ($errors->has('g-recaptcha-response'))
                                 <div>
                                     <small class="text-danger">
@@ -111,10 +109,10 @@
                         {{-- <div class="g-recaptcha" data-sitekey="6LetKvAqAAAAABrCI--Y13sWrKqO_Lwx1tOgrJZ4"></div> --}}
 
                         <!-- Remember Me Checkbox -->
-                        <!-- <div class="mb-3 form-check">
+                        {{-- <div class="mb-3 form-check">
                           <input type="checkbox" class="form-check-input" id="rememberMe">
                           <label class="form-check-label" for="rememberMe">Remember me</label>
-                        </div> -->
+                        </div>  --}}
 
                         <!-- Forgot Password Link -->
                         <div class="mt-3 mb-3 text-center">
@@ -125,9 +123,9 @@
 
                         <p class="account-text py-3">Don't have an account? <span class="account-text-login"
                                 style="color: #0C4F24 !important;"><a href="{{ route('register') }}">Register</a></span></p>
-                        {{-- <p class="text-center sub-title">BENGEDMS, Powered by BDIC</p> --}}
+                        
                         <div class="d-flex justify-content-center mt-2">
-                            <p class="text-center sub-title">BENGEDMS, Powered by </p><a href="https://bdic.ng/"
+                            <p class="text-center sub-title">UASTEDMS, Powered by </p><a href="https://bdic.ng/"
                                 target="__blank"><img src="{{ asset('landing/images/BDIC logo 1 1.svg') }}"></a>
                         </div>
                     </form>

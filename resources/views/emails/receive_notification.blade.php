@@ -104,7 +104,7 @@
                 Kindly access your dashboard to review the document.
             </p>
             <div class="button">
-                <a href="https://edms.benuestate.gov.ng/login">Login to Dashboard</a>
+                <a href="https://uast-edms.benuestate.gov.ng/login">Login to Dashboard</a>
             </div>
             <p>
                 Thank you for choosing <strong>{{ $appName }}</strong>.

@@ -21,6 +21,7 @@ return new class extends Migration
             // $table->foreignId('tenant_id')->constrained('tenants')->nullable();
             $table->enum('status', ['pending', 'processing', 'approved', 'rejected', 'kiv', 'completed'])->default('pending'); // pending, approved, rejected
             $table->text('description')->nullable();
+            $table->foreignId('folder_id')->nullable()->constrained('folders')->onDelete('set null');
             $table->timestamps();
             $table->softDeletes();
         });

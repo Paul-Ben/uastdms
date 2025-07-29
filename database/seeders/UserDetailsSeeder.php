@@ -23,7 +23,7 @@ class UserDetailsSeeder extends Seeder
                 'avatar' => 'avatar.png',
                 'signature' => 'signature.png',
                 'department_id' => null,
-                'tenant_id' => 36,
+                'tenant_id' => 2,
             ],
             [
                 'user_id' => 2,

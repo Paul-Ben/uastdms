@@ -57,6 +57,6 @@ class AuthenticatedSessionController extends Controller
             'alert-type' => 'info'
         );
         
-        return redirect('/')->with($notification);
+        return redirect('/login')->with($notification);
     }
 }

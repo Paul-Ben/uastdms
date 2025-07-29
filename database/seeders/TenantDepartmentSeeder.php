@@ -21,40 +21,11 @@ class TenantDepartmentSeeder extends Seeder
             'tenant_id' => 1
         ]);
         $tenant = TenantDepartment::create([
-            'name' => 'Protocol Office',
-            'email' => 'gh1@bngh.ng',
-            'phone' => '09087767543',
-            'status' => 'active',
-            'tenant_id' => 2
-        ]);
-        $tenant = TenantDepartment::create([
-            'name' => 'Bureau of Administrative',
-            'email' => 'ba@bnsg.com',
-            'phone' => '09087767543',
-            'status' => 'active',
-            'tenant_id' => 3
-        ]);
-        $tenant = TenantDepartment::create([
-            'name' => 'Bureau of Service Welfare',
-            'email' => 'bsw@bnsg.com',
-            'phone' => '09087767543',
-            'status' => 'active',
-            'tenant_id' => 3
-        ]);
-        $tenant = TenantDepartment::create([
-            'name' => 'Bureau of Manpower Development and Training',
-            'email' => 'bmdt@bnsg.com',
-            'phone' => '09087767543',
-            'status' => 'active',
-            'tenant_id' => 3
-
-        ]);
-        $tenant = TenantDepartment::create([
             'name' => 'Office of the Vice Chancellor',
             'email' => 'bmdt@bnsg.com',
             'phone' => '09087767543',
             'status' => 'active',
-            'tenant_id' => 3
+            'tenant_id' => 2
 
         ]);
         $tenant = TenantDepartment::create([
@@ -62,56 +33,53 @@ class TenantDepartmentSeeder extends Seeder
             'email' => 'hmb@bnsg.com',
             'phone' => '09087767543',
             'status' => 'active',
-            'tenant_id' => 31
+            'tenant_id' => 3
 
         ]);
         $tenant = TenantDepartment::create([
-            'name' => 'Office of the MD Benue Primary Healthcare Board',
+            'name' => 'Offoce of the DVC-Academic',
+            'email' => 'gh1@bngh.ng',
+            'phone' => '09087767543',
+            'status' => 'active',
+            'tenant_id' => 4
+        ]);
+        $tenant = TenantDepartment::create([
+            'name' => 'Office of the DVC-Administration',
+            'email' => 'ba@bnsg.com',
+            'phone' => '09087767543',
+            'status' => 'active',
+            'tenant_id' => 5
+        ]);
+        $tenant = TenantDepartment::create([
+            'name' => 'Office of the Bursar',
+            'email' => 'bsw@bnsg.com',
+            'phone' => '09087767543',
+            'status' => 'active',
+            'tenant_id' => 6
+        ]);
+        $tenant = TenantDepartment::create([
+            'name' => 'Student Affairs Division',
+            'email' => 'bmdt@bnsg.com',
+            'phone' => '09087767543',
+            'status' => 'active',
+            'tenant_id' => 7
+
+        ]);       
+        $tenant = TenantDepartment::create([
+            'name' => 'Office of the Director Academic Planning',
             'email' => 'hmb@bnsg.com',
             'phone' => '09087767543',
             'status' => 'active',
-            'tenant_id' => 34
+            'tenant_id' => 8
 
         ]);
         $tenant = TenantDepartment::create([
-            'name' => 'Office of the Commissioner MOE',
-            'email' => 'hmb@bnsg.com',
-            'phone' => '09087767543',
-            'status' => 'active',
-            'tenant_id' => 14
-
-        ]);
-        $tenant = TenantDepartment::create([
-            'name' => 'Office of the MD BDIC',
+            'name' => 'Office of the Director Procurement',
             'email' => 'md@bdic.ng',
             'phone' => '09087767543',
             'status' => 'active',
-            'tenant_id' => 36
-
-        ]);
-        $tenant = TenantDepartment::create([
-            'name' => 'Office of the Statistician General',
-            'email' => 'sg@bdic.ng',
-            'phone' => '09087767543',
-            'status' => 'active',
-            'tenant_id' => 33
-
-        ]);
-        $tenant = TenantDepartment::create([
-            'name' => 'Office of the MD BEQA',
-            'email' => 'beqa@bdic.ng',
-            'phone' => '09087767543',
-            'status' => 'active',
-            'tenant_id' => 37
-
-        ]);
-        $tenant = TenantDepartment::create([
-            'name' => 'Office of the Commissioner MWHUD',
-            'email' => 'mwhud@bdic.ng',
-            'phone' => '09087767543',
-            'status' => 'active',
             'tenant_id' => 9
-
         ]);
+       
     }
 }

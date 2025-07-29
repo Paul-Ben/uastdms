@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="utf-8">
-    <title>BNSGDMS - Forgot Password</title>
+    <title>UASTEDMS - Forgot Password</title>
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <meta content="" name="keywords">
     <meta content="" name="description">

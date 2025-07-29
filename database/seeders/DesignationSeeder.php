@@ -15,34 +15,34 @@ class DesignationSeeder extends Seeder
     {
         DB::table('designations')->insert([
             [
-                'name' => 'Commisioner',
+                'name' => 'Vice Chancellor',
             ],
             [
                 'name' => 'Director',
             ],
             [
-                'name' => 'Permanenet Secretary',
-            ],
-            [
                 'name' => 'Deputy Director',
             ],
             [
-                'name' => 'Senior Admin Officer',
+                'name' => 'Registrar',
             ],
             [
-                'name' => 'Admin Officer',
+                'name' => 'Deputy Vice-Cahancellor',
+            ],
+            [
+                'name' => 'Bursar',
             ],
             [
                 'name' => 'System Admin',
             ],
             [
-                'name' => 'Director General',
+                'name' => 'Dean',
             ],
             [
-                'name' => 'Managing Director',
+                'name' => 'Deputy Dean',
             ],
             [
-                'name' => 'Board Secretary',
+                'name' => 'Head of Department',
             ],
             [
                 'name' => 'Chairman',
@@ -51,17 +51,9 @@ class DesignationSeeder extends Seeder
                 'name' => 'Confidential Secretary',
             ],
             [
-                'name' => 'Staff Officer',
+                'name' => 'Academic Officer',
             ],
-            [
-                'name' => 'Executive Officer',
-            ],
-            [
-                'name' => 'Clerical Officer',
-            ],
-            [
-                'name' => 'Statistician General',
-            ],
+           
             
         ]);
         // $designations = [

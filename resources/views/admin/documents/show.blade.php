@@ -373,9 +373,22 @@
                         {{ $document_received->document->file_path }}
                         <div id="previewContainer" class="mt-3"
                             style="display: flex; flex-direction: column; height: 90vh; min-height: 300px;">
-                            <iframe id="pdfPreview" style="flex: 1 1 auto; height: 1000px; width: 100%; border: none;"
+                            {{-- <iframe id="pdfPreview" style="flex: 1 1 auto; height: 1000px; width: 100%; border: none;"
                                 src="{{ asset('storage/' . $document_received->document->file_path) }}">
-                            </iframe>
+                            </iframe> --}}
+                            @php
+                                // Determine if the stored file_path is a full URL or a relative path
+                                $fileUrl = $document_received->document->file_path;
+
+                                // Basic check if the file_path starts with http:// or https:// --> means full URL (e.g. Cloudinary)
+                                if (!preg_match('/^https?:\/\//', $fileUrl)) {
+                                    // If relative path assumed, generate full URL via asset helper
+                                    $fileUrl = asset('storage/' . $fileUrl);
+                                }
+                            @endphp
+
+                            <iframe id="pdfPreview" style="flex: 1 1 auto; height: 1000px; width: 100%; border: none;"
+                                src="{{ $fileUrl }}"></iframe>
                         </div>
                     </div>
                 </div>
@@ -383,10 +396,10 @@
                 <!-- Attachments List -->
                 <div class="mt-3">
                     @if ($document_received->attachments->isNotEmpty())
-                        <a href="{{ asset('documents/attachments/' . $document_received->attachments[0]->attachment) }}"
+                        <a href="{{  $document_received->attachments[0]->attachment }}"
                             target="__blank" class="btn btn-sm btn-outline-primary">
                             <i class="fas fa-paperclip mr-1"></i>
-                            Attachment by {{ $document_received->sender->name }}
+                            Attachment sent by {{ $document_received->sender->name }}
                         </a>
                     @endif
                 </div>
@@ -401,7 +414,7 @@
                     </div>
                     <div class="file-details">
                         <div class="file-name">
-                            <a href="{{ asset('storage/' . $document_received->document->file_path) }}" target="__blank"
+                            <a href="{{  $document_received->document->file_path }}" target="__blank"
                                 class="text-primary">
                                 {{ $document_received->document->docuent_number }}
                             </a>

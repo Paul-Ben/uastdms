@@ -1,322 +1,3 @@
-{{-- @extends('dashboards.index')
-@section('content')
-    <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: Arial, sans-serif;
-        }
-
-        body {
-            background: #f6f8fc;
-            padding: 20px;
-        }
-
-        .email-container {
-            max-width: 1000px;
-            margin: 0 auto;
-            background: white;
-            border-radius: 8px;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
-            padding: 20px;
-        }
-
-        .toolbar {
-            padding: 10px 0;
-            border-bottom: 1px solid #eee;
-            margin-bottom: 20px;
-            display: flex;
-            gap: 10px;
-        }
-
-        .btn {
-            padding: 8px 16px;
-            border: 1px solid #dadce0;
-            border-radius: 4px;
-            background: white;
-            color: #444;
-            cursor: pointer;
-            font-size: 14px;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-        }
-
-        .btn:hover {
-            background: #f1f3f4;
-        }
-
-        .btn svg {
-            width: 16px;
-            height: 16px;
-        }
-
-        .email-header {
-            margin-bottom: 20px;
-        }
-
-        .subject {
-            font-size: 20px;
-            color: #202124;
-            margin-bottom: 15px;
-        }
-
-        .email-meta {
-            display: grid;
-            grid-template-columns: 80px 1fr;
-            gap: 10px;
-            font-size: 14px;
-            color: #5f6368;
-        }
-
-        .email-body {
-            color: #202124;
-            line-height: 1.5;
-            margin: 20px 0;
-        }
-
-        .attachment {
-            border: 1px solid #dadce0;
-            border-radius: 4px;
-            padding: 12px;
-            margin: 20px 0;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            cursor: pointer;
-        }
-
-        .attachment:hover {
-            background: #f8f9fa;
-        }
-
-        .file-icon {
-            width: 36px;
-            height: 36px;
-            background: #f1f3f4;
-            border-radius: 4px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .file-details {
-            flex: 1;
-        }
-
-        .file-name {
-            font-weight: 500;
-            color: #202124;
-        }
-
-        .file-meta {
-            font-size: 12px;
-            color: #5f6368;
-        }
-
-        .preview-modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0, 0, 0, 0.5);
-            z-index: 1000;
-        }
-
-        .preview-content {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: white;
-            padding: 20px;
-            border-radius: 8px;
-            width: 80%;
-            max-height: 80vh;
-            overflow: auto;
-        }
-
-        .close-preview {
-            position: absolute;
-            right: 20px;
-            top: 20px;
-            cursor: pointer;
-        }
-    </style>
-
-    <!-- Button Start -->
-    <div class="container-fluid pt-4 px-4">
-        <div class="col-12">
-            <div class="bg-light rounded h-100 p-4">
-
-            </div>
-        </div>
-    </div>
-    <!-- Button End -->
-    <div class="container-fluid pt-4 px-4">
-        <div class="bg-light rounded p-4">
-            <div class="email-container">
-                <!-- Toolbar -->
-                <div class="toolbar">
-                    <a href="{{ route('document.reply', $document_received->document_id) }}">
-                        <button class="btn" onclick="replyEmail()">
-                            <svg viewBox="0 0 24 24">
-                                <path fill="currentColor" d="M10 9V5l-7 7 7 7v-4.1c5 0 8.5 1.6 11 5.1-1-5-4-10-11-11z" />
-                            </svg>
-                            Reply
-                        </button>
-                    </a>
-                    <a href="{{ route('document.send', $document_received->document_id) }}">
-                        <button class="btn" onclick="forwardEmail()">
-                            <svg viewBox="0 0 24 24">
-                                <path fill="currentColor" d="M14 9v-4l7 7-7 7v-4.1c-5 0-8.5 1.6-11 5.1 1-5 4-10 11-11z" />
-                            </svg>
-                            Forward
-                        </button>
-                    </a>
-                    <form action="{{ route('document.senddoc2admin') }}" method="POST">
-                        @csrf
-                        <input type="hidden" name="document_data" value="{{ json_encode($document_received) }}">
-                        <button type="submit" class="btn" onclick="forwardEmail()">
-                            <svg viewBox="0 0 24 24">
-                                <path fill="#34C759"
-                                    d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z" />
-                            </svg>
-                            Reviewed
-                        </button>
-                    </form>
-                    <a href="{{route('track', $document_received->document_id)}}">
-                        <button class="btn" >
-                       <svg viewBox="0 0 24 24">
-                           <path fill="currentColor" d="M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4L9 16.2z" />
-                       </svg>
-                       Track
-                   </button>
-                   </a>
-                   @if ($document_received->attachments->isNotEmpty())
-                   <a href="{{route('getAttachments', $document_received->document_id)}}" target="_blank">
-                       <button class="btn">
-                           <svg viewBox="0 0 24 24">
-                               <path fill="currentColor" d="M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4L9 16.2z" />
-                           </svg>
-                           Attachments
-                       </button>
-                   </a>
-                   @endif
-                    <a href="{{ url()->previous() }}">
-                        <button class="btn" onclick="replyEmail()">
-                            <svg viewBox="0 0 24 24">
-                                <path fill="currentColor" d="M10 9V5l-7 7 7 7v-4.1c5 0 8.5 1.6 11 5.1-1-5-4-10-11-11z" />
-                            </svg>
-                            Back
-                        </button>
-                    </a>
-                </div>
-
-                <!-- Email Header -->
-                <div class="email-header mb-3">
-                    <div class="subject"><strong>Subject:</strong> {{ e($document_received->document->title) }}</div>
-                    <div class="email-meta text-muted">
-                        <strong>From:</strong> {{ e($document_received->sender->name) }}
-                        &lt;{{ e($document_received->sender->email) }}&gt;<br>
-                        <strong>To:</strong> {{ e($document_received->recipient->name) }}
-                        &lt;{{ e($document_received->recipient->email) }}&gt;<br>
-                        <strong>Date:</strong> {{ $document_received->created_at->format('M j, Y') }}
-                    </div>
-                </div>
-
-                <!-- Email Body -->
-                <div class="email-body">
-                    <p>Hi {{ e($document_received->recipient->name) }},</p>
-                    <p>{{ e($document_received->message) }}</p>
-                    <p>Best regards,<br>{{ e($document_received->sender->name) }}</p>
-                </div>
-                <div>
-                    @if ($document_received->attachments->isNotEmpty())
-                        <a href="{{ asset('documents/attachments/' . $document_received->attachments[0]->attachment) }}"
-                            target="__blank">Attachment by {{ $document_received->sender->name }}</a>
-                    @else
-                        
-                    @endif
-
-                </div>
-
-                <!-- Attachment -->
-                <div class="attachment mt-4">
-                    <div class="file-details">
-                        <strong>Attachment:</strong>
-                        <div class="file-name">
-                            <a href="{{ asset('storage/'. $document_received->document->file_path) }}" target="_blank">
-                                {{ e($document_received->document->file_path) }}
-                            </a>
-                        </div>
-                        
-                        <div id="previewContainer">
-                            <iframe id="pdfPreview" style="width: 100%; height: 400px;" frameborder="0"
-                                src="{{ asset('storage/'. $document_received->document->file_path) }}"></iframe>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <script>
-        function showPreview() {
-            document.getElementById('previewModal').style.display = 'block';
-
-
-        }
-
-        function closePreview() {
-            document.getElementById('previewModal').style.display = 'none';
-            const modal = document.getElementById('previewModal');
-            const pdfPreview = document.getElementById('pdfPreview');
-
-            // Clear the iframe source when closing the modal
-            pdfPreview.src = '';
-            modal.style.display = 'none';
-        }
-
-        function replyEmail() {
-            alert('Opening reply composer...');
-        }
-
-        function forwardEmail() {
-            alert('Opening forward composer...');
-        }
-
-        function processEmail() {
-            alert('Processing email...');
-        }
-
-        // Close modal when clicking outside
-        window.onclick = function(event) {
-            const modal = document.getElementById('previewModal');
-            if (event.target == modal) {
-                modal.style.display = 'none';
-            }
-        }
-    </script>
-    <script>
-        function previewDocument(fileUrl, fileType) {
-            if (fileType === 'pdf') {
-                document.getElementById('imagePreview').style.display = 'none';
-                const pdfPreview = document.getElementById('pdfPreview');
-                pdfPreview.style.display = 'block';
-                pdfPreview.src = fileUrl;
-            } else if (fileType.match(/(jpg|jpeg|png)/)) {
-                document.getElementById('pdfPreview').style.display = 'none';
-                const imagePreview = document.getElementById('imagePreview');
-                imagePreview.style.display = 'block';
-                imagePreview.src = fileUrl;
-            }
-        }
-    </script>
-@endsection --}}
 @extends('dashboards.index')
 @section('content')
     <style>
@@ -696,9 +377,22 @@
                         <div id="previewContainer" class="mt-3">
                             {{-- <iframe id="pdfPreview" style="width: 100%; height: 300px; min-height: 300px;" frameborder="0"
                                 src="{{ asset('storage/' . $document_received->document->file_path) }}"></iframe> --}}
-                                <iframe id="pdfPreview" style="flex: 1 1 auto; height: 1000px; width: 100%; border: none;"
+                                {{-- <iframe id="pdfPreview" style="flex: 1 1 auto; height: 1000px; width: 100%; border: none;"
                                 src="{{ asset('storage/' . $document_received->document->file_path) }}">
-                            </iframe>
+                            </iframe> --}}
+                            @php
+                                // Determine if the stored file_path is a full URL or a relative path
+                                $fileUrl = $document_received->document->file_path;
+
+                                // Basic check if the file_path starts with http:// or https:// --> means full URL (e.g. Cloudinary)
+                                if (!preg_match('/^https?:\/\//', $fileUrl)) {
+                                    // If relative path assumed, generate full URL via asset helper
+                                    $fileUrl = asset('storage/' . $fileUrl);
+                                }
+                            @endphp
+
+                            <iframe id="pdfPreview" style="flex: 1 1 auto; height: 1000px; width: 100%; border: none;"
+                                src="{{ $fileUrl }}"></iframe>
                         </div>
                     </div>
                 </div>
@@ -706,10 +400,10 @@
                 <!-- Attachments List -->
                 <div class="mt-3">
                     @if ($document_received->attachments->isNotEmpty())
-                        <a href="{{ asset('documents/attachments/' . $document_received->attachments[0]->attachment) }}"
+                        <a href="{{  $document_received->attachments[0]->attachment }}"
                             target="__blank" class="btn btn-sm btn-outline-primary">
                             <i class="fas fa-paperclip mr-1"></i>
-                            Attachment by {{ $document_received->sender->name }}
+                            Attachment sent by {{ $document_received->sender->name }}
                         </a>
                     @endif
                 </div>
@@ -724,7 +418,7 @@
                     </div>
                     <div class="file-details">
                         <div class="file-name">
-                            <a href="{{ asset('storage/' . $document_received->document->file_path) }}"
+                            <a href="{{  $document_received->document->file_path }}"
                                 target="__blank" class="text-primary">
                                 {{ $document_received->document->docuent_number }}
                             </a>

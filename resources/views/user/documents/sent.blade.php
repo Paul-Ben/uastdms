@@ -4,7 +4,7 @@
     <div class="container-fluid pt-4 px-4">
         <div class="col-12">
             <div class="bg-light rounded h-100 p-4">
-               
+
             </div>
         </div>
     </div>
@@ -43,20 +43,21 @@
                             </td>
                                 <td>{{$sent->document->title}}</td>
                                 <td>
-                                    @if ($mda)
+                                    {{-- @if ($mda)
                                         {{$mda[0]->designation}}, <br>
                                     <span>{{$mda[0]->tenant->name}}</span>
                                     @else
                                     <span>Not Found</span>
-                                    @endif
-                                    
+                                    @endif --}}
+                                {{$sent->recipient->userDetail->tenant_department->name ?? 'Not Found'}}
+
                                 </td>
                                 <td>{{$sent->document->created_at->format('M j, Y g:i A')}}</td>
                                 {{-- <td>
                                     <a href="{{route('document.view_sent', $sent)}}" class="nav-item">View</a>
                                 </td> --}}
                             </tr>
-                            @empty
+                        @empty
                             <tr class="text-center">
                                 <td colspan="6">No Data Found</td>
                                 </tr>

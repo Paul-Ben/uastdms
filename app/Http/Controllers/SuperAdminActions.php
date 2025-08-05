@@ -1151,141 +1151,278 @@ class SuperAdminActions extends Controller
             return redirect()->back()->with($notification);
         }
     }
+
     public function handleETranzactCallback(Request $request)
-    {
+{
+    return DB::transaction(function () use ($request) {
+        $reference = $request->reference;
 
-        // Verify the transaction with the payment gateway
-        $response = Http::accept('application/json')->withHeaders([
-            'authorization' => env('CREDO_SECRET_KEY'),
-            'content-type' => 'application/json',
-        ])->get(env('CREDO_URL') . "/transaction/{$request->reference}/verify");
-
-        // Check if the response is successful
-        if (!$response->successful()) {
-            return $this->handleFailedPayment('Payment verification failed. Please try again.');
+        // Check if payment already processed
+        if (Payment::where('reference', $reference)->exists()) {
+            return $this->redirectWithNotification('Payment already processed', 'info');
         }
 
-        $payment = $response->json('data');
+        $documentHold = DocumentHold::where('reference', $reference)
+            ->lockForUpdate() // Prevent concurrent processing
+            ->first();
 
-        // Extract payment status and message
-        $status = $payment['status'];
-        $message = $payment['statusMessage'] == 'Successfully processed' ? 'Successful' : 'Failed';
-
-        // Handle successful payment
-        if ($message == 'Successful') {
-            $recipient_id = DocumentHold::where('reference', $request->reference)->first()->recipient_id;
-            $document_no = DocumentHold::where('reference', $request->reference)->first()->docuent_number;
-            $tenant_id = User::with('userDetail')->where('id', $recipient_id)->first()->userDetail->tenant_id;
-
-            // Create a new payment record
-            Payment::create([
-                'businessName' => $payment['businessName'],
-                'document_no' => $document_no,
-                'reference' => $payment['businessRef'],
-                'transAmount' => $payment['transAmount'],
-                'transFee' => $payment['transFeeAmount'],
-                'transTotal' => $payment['debitedAmount'],
-                'transDate' => $payment['transactionDate'],
-                'settlementAmount' => $payment['settlementAmount'],
-                'status' => $payment['status'],
-                'statusMessage' => $payment['statusMessage'],
-                'customerEmail' => $payment['customerId'],
-                'customerId' => Auth::id(),
-                'channelId' => $payment['channelId'],
-                'currencyCode' => $payment['currencyCode'],
-                'recipient_id' => $recipient_id,
-                'tenant_id' => $tenant_id,
-            ]);
-            return $this->handleSuccessfulPayment($request->reference);
-        }
-
-        // Handle failed payment
-        return $this->handleFailedPayment('Payment failed. Please try again.');
-    }
-
-    /**
-     * Handle a successful payment.
-     */
-    protected function handleSuccessfulPayment($reference)
-    {
-        // Find the document hold record
-        $document = DocumentHold::where('reference', $reference)->first();
-
-        if (!$document) {
+        if (!$documentHold) {
             return $this->handleFailedPayment('Document not found.');
         }
 
-        // Update document hold status
-        $document->status = 'Successful';
-        $document->save();
+        // Prevent duplicate processing
+        if ($documentHold->status === 'Successful') {
+            return $this->redirectWithNotification('Document already processed', 'info');
+        }
 
-        // Create a new document
-        $newDocument = Document::create([
-            'title' => $document->title,
-            'docuent_number' => $document->docuent_number,
-            'file_path' => $document->file_path,
-            'uploaded_by' => $document->uploaded_by,
-            'status' => 'pending',
-            'description' => $document->description,
-            // 'metadata' => json_encode($document->metadata),
+        // Verify transaction
+        $response = Http::accept('application/json')->withHeaders([
+            'authorization' => env('CREDO_SECRET_KEY'),
+            'content-type' => 'application/json',
+        ])->get(env('CREDO_URL') . "/transaction/{$reference}/verify");
+
+        if (!$response->successful()) {
+            return $this->handleFailedPayment('Payment verification failed.');
+        }
+
+        $payment = $response->json('data');
+        $status = $payment['status'];
+        $message = $payment['statusMessage'] == 'Successfully processed' ? 'Successful' : 'Failed';
+
+        if ($message !== 'Successful') {
+            return $this->handleFailedPayment('Payment failed. Please try again.');
+        }
+
+        // Create payment record
+        $recipient_id = $documentHold->recipient_id;
+        $document_no = $documentHold->docuent_number;
+        $tenant_id = User::with('userDetail')->where('id', $recipient_id)->first()->userDetail->tenant_id;
+
+        Payment::create([
+            'businessName' => $payment['businessName'],
+            'document_no' => $document_no,
+            'reference' => $payment['businessRef'],
+            'transAmount' => $payment['transAmount'],
+            'transFee' => $payment['transFeeAmount'],
+            'transTotal' => $payment['debitedAmount'],
+            'transDate' => $payment['transactionDate'],
+            'settlementAmount' => $payment['settlementAmount'],
+            'status' => $payment['status'],
+            'statusMessage' => $payment['statusMessage'],
+            'customerEmail' => $payment['customerId'],
+            'customerId' => Auth::id(),
+            'channelId' => $payment['channelId'],
+            'currencyCode' => $payment['currencyCode'],
+            'recipient_id' => $recipient_id,
+            'tenant_id' => $tenant_id,
         ]);
 
-        // Log document upload activity
+        // Update document status immediately
+        $documentHold->update(['status' => 'Successful']);
+
+        // Create document (only once)
+        $newDocument = Document::create([
+            'title' => $documentHold->title,
+            'docuent_number' => $documentHold->docuent_number,
+            'file_path' => $documentHold->file_path,
+            'uploaded_by' => $documentHold->uploaded_by,
+            'status' => 'pending',
+            'description' => $documentHold->description,
+        ]);
+
+        // Log activity
         Activity::create([
             'action' => 'You uploaded a document',
             'user_id' => Auth::id(),
+
         ]);
 
-        // Create file movement record
+        // Create file movement
         $fileMovement = FileMovement::create([
-            'recipient_id' => $document->recipient_id,
+            'recipient_id' => $documentHold->recipient_id,
             'sender_id' => Auth::id(),
-            'message' => $document->description,
+            'message' => $documentHold->description,
             'document_id' => $newDocument->id,
         ]);
 
-        // Create document recipient record
+        // Create recipient
         DocumentRecipient::create([
             'file_movement_id' => $fileMovement->id,
-            'recipient_id' => $document->recipient_id,
+            'recipient_id' => $documentHold->recipient_id,
             'user_id' => Auth::id(),
             'created_at' => now(),
         ]);
 
-        // Log additional activities
+        // Additional activities
         Activity::insert([
-            [
-                'action' => 'Sent Document',
-                'user_id' => Auth::id(),
-                'created_at' => now(),
-            ],
-            [
-                'action' => 'Document Received',
-                'user_id' => $document->recipient_id,
-                'created_at' => now(),
-            ],
+            ['action' => 'Sent Document', 'user_id' => Auth::id(), 'created_at' => now(),],
+            ['action' => 'Document Received', 'user_id' => $documentHold->recipient_id, 'created_at' => now(),],
         ]);
-        $userOrg = User::with('userDetail.tenant')->where('id', $document->recipient_id)->first();
-        $userDepartment = UserDetails::with('tenant_department')->where('id', $document->recipient_id)->first();
-        $userDepartment = $userDepartment->tenant_department->name ?? null;
-        $userTenant = $userOrg->userDetail->tenant->name ?? null;
 
+        // Email notifications
+        $userOrg = User::with('userDetail.tenant')->find($documentHold->recipient_id);
+        $userDepartment = UserDetails::with('tenant_department')->find($documentHold->recipient_id);
+        
+        $userDepartmentName = $userDepartment->tenant_department->name ?? null;
+        $userTenant = $userOrg->userDetail->tenant->name ?? null;
         $senderName = Auth::user()->name;
-        $receiverName = User::find($document->recipient_id)->name;
-        $documentName = $document->title;
-        $documentId = $document->docuent_number;
+        $receiverName = $userOrg->name;
+        $documentName = $documentHold->title;
+        $documentId = $documentHold->docuent_number;
         $appName = config('app.name');
 
         try {
-            Mail::to(Auth::user()->email)->send(new SendNotificationMail($senderName, $receiverName,  $documentName, $appName, $userTenant, $userDepartment));
-            Mail::to(User::find($document->recipient_id)?->email)->send(new ReceiveNotificationMail($senderName, $receiverName, $documentName, $documentId, $appName));
-        } catch (\Exception $e) {
-            Log::error('Failed to send Document notification');
+            Mail::to(Auth::user()->email)->send(
+                new SendNotificationMail($senderName, $receiverName, $documentName, $appName, $userTenant, $userDepartmentName)
+            );
+            
+            Mail::to($userOrg->email)->send(
+                new ReceiveNotificationMail($senderName, $receiverName, $documentName, $documentId, $appName)
+            );
+        } catch (Exception $e) {
+            Log::error('Email failed: ' . $e->getMessage());
         }
 
-        // Redirect with success notification
-        return $this->redirectWithNotification('Document uploaded and sent successfully.', 'success');
-    }
+        return $this->redirectWithNotification('Document processed successfully', 'success');
+    });
+}
+
+    // public function handleETranzactCallback(Request $request)
+    // {
+
+    //     // Verify the transaction with the payment gateway
+    //     $response = Http::accept('application/json')->withHeaders([
+    //         'authorization' => env('CREDO_SECRET_KEY'),
+    //         'content-type' => 'application/json',
+    //     ])->get(env('CREDO_URL') . "/transaction/{$request->reference}/verify");
+
+    //     // Check if the response is successful
+    //     if (!$response->successful()) {
+    //         return $this->handleFailedPayment('Payment verification failed. Please try again.');
+    //     }
+
+    //     $payment = $response->json('data');
+
+    //     // Extract payment status and message
+    //     $status = $payment['status'];
+    //     $message = $payment['statusMessage'] == 'Successfully processed' ? 'Successful' : 'Failed';
+
+    //     // Handle successful payment
+    //     if ($message == 'Successful') {
+    //         $recipient_id = DocumentHold::where('reference', $request->reference)->first()->recipient_id;
+    //         $document_no = DocumentHold::where('reference', $request->reference)->first()->docuent_number;
+    //         $tenant_id = User::with('userDetail')->where('id', $recipient_id)->first()->userDetail->tenant_id;
+
+    //         // Create a new payment record
+    //         Payment::create([
+    //             'businessName' => $payment['businessName'],
+    //             'document_no' => $document_no,
+    //             'reference' => $payment['businessRef'],
+    //             'transAmount' => $payment['transAmount'],
+    //             'transFee' => $payment['transFeeAmount'],
+    //             'transTotal' => $payment['debitedAmount'],
+    //             'transDate' => $payment['transactionDate'],
+    //             'settlementAmount' => $payment['settlementAmount'],
+    //             'status' => $payment['status'],
+    //             'statusMessage' => $payment['statusMessage'],
+    //             'customerEmail' => $payment['customerId'],
+    //             'customerId' => Auth::id(),
+    //             'channelId' => $payment['channelId'],
+    //             'currencyCode' => $payment['currencyCode'],
+    //             'recipient_id' => $recipient_id,
+    //             'tenant_id' => $tenant_id,
+    //         ]);
+    //         return $this->handleSuccessfulPayment($request->reference);
+    //     }
+
+    //     // Handle failed payment
+    //     return $this->handleFailedPayment('Payment failed. Please try again.');
+    // }
+
+    /**
+     * Handle a successful payment.
+     */
+    // protected function handleSuccessfulPayment($reference)
+    // {
+    //     // Find the document hold record
+    //     $document = DocumentHold::where('reference', $reference)->first();
+
+    //     if (!$document) {
+    //         return $this->handleFailedPayment('Document not found.');
+    //     }
+
+    //     // Update document hold status
+    //     $document->status = 'Successful';
+    //     $document->save();
+
+    //     // Create a new document
+    //     $newDocument = Document::create([
+    //         'title' => $document->title,
+    //         'docuent_number' => $document->docuent_number,
+    //         'file_path' => $document->file_path,
+    //         'uploaded_by' => $document->uploaded_by,
+    //         'status' => 'pending',
+    //         'description' => $document->description,
+    //         // 'metadata' => json_encode($document->metadata),
+    //     ]);
+    //     Log::info('Document uploaded successfully and created a new document.');
+    //     dd($newDocument);
+    //     // Log document upload activity
+    //     Activity::create([
+    //         'action' => 'You uploaded a document',
+    //         'user_id' => Auth::id(),
+    //     ]);
+
+    //     // Create file movement record
+    //     $fileMovement = FileMovement::create([
+    //         'recipient_id' => $document->recipient_id,
+    //         'sender_id' => Auth::id(),
+    //         'message' => $document->description,
+    //         'document_id' => $newDocument->id,
+    //     ]);
+
+    //     // Create document recipient record
+    //     DocumentRecipient::create([
+    //         'file_movement_id' => $fileMovement->id,
+    //         'recipient_id' => $document->recipient_id,
+    //         'user_id' => Auth::id(),
+    //         'created_at' => now(),
+    //     ]);
+
+    //     // Log additional activities
+    //     Activity::insert([
+    //         [
+    //             'action' => 'Sent Document',
+    //             'user_id' => Auth::id(),
+    //             'created_at' => now(),
+    //         ],
+    //         [
+    //             'action' => 'Document Received',
+    //             'user_id' => $document->recipient_id,
+    //             'created_at' => now(),
+    //         ],
+    //     ]);
+    //     $userOrg = User::with('userDetail.tenant')->where('id', $document->recipient_id)->first();
+    //     $userDepartment = UserDetails::with('tenant_department')->where('id', $document->recipient_id)->first();
+    //     $userDepartment = $userDepartment->tenant_department->name ?? null;
+    //     $userTenant = $userOrg->userDetail->tenant->name ?? null;
+
+    //     $senderName = Auth::user()->name;
+    //     $receiverName = User::find($document->recipient_id)->name;
+    //     $documentName = $document->title;
+    //     $documentId = $document->docuent_number;
+    //     $appName = config('app.name');
+
+    //     try {
+    //         Mail::to(Auth::user()->email)->send(new SendNotificationMail($senderName, $receiverName,  $documentName, $appName, $userTenant, $userDepartment));
+    //         Mail::to(User::find($document->recipient_id)?->email)->send(new ReceiveNotificationMail($senderName, $receiverName, $documentName, $documentId, $appName));
+    //     } catch (\Exception $e) {
+    //         Log::error('Failed to send Document notification');
+    //     }
+
+    //     // Redirect with success notification
+    //     return $this->redirectWithNotification('Document uploaded and sent successfully.', 'success');
+    // }
 
     // /**
     //  * Handle a failed payment.

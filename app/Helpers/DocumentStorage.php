@@ -648,7 +648,7 @@ class DocumentStorage
 
     public static function getUserRecipients()
     {
-        $adminWithTenantDetails = User::where('default_role', 'Secretary')
+        $adminWithTenantDetails = User::where('default_role', 'Admin')
             ->whereHas('userDetail', function ($query) {
                 $query->whereNotNull('tenant_id');
             })

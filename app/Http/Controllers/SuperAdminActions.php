@@ -1477,8 +1477,9 @@ class SuperAdminActions extends Controller
         $userTenant = Tenant::where('id', $userdetails->tenant_id)->first();
         if (Auth::user()->default_role === 'superadmin') {
             $document_received =  FileMovement::with(['sender', 'recipient', 'document'])->where('id', $received)->first();
+            $document_locations = FileMovement::with(['document', 'sender.userDetail', 'recipient.userDetail.tenant_department'])->where('document_id', $document_received->document_id)->orderBy('updated_at', 'desc')->get();
             
-            return view('superadmin.documents.show', compact('document_received', 'authUser', 'userTenant'));
+            return view('superadmin.documents.show', compact('document_received', 'document_locations', 'authUser', 'userTenant'));
         }
         if (Auth::user()->default_role === 'Admin') {
             $document_received =  FileMovement::with(['sender', 'recipient', 'document', 'attachments'])->where('id', $received)->first();
@@ -1582,7 +1583,7 @@ class SuperAdminActions extends Controller
         }
         if (Auth::user()->default_role === 'Admin') {
             list($sent_documents, $recipient) = DocumentStorage::getSentDocuments();
-            // dd($sent_documents);
+          
             return view('admin.documents.sent', compact('sent_documents', 'recipient', 'authUser', 'userTenant'));
         }
         if (Auth::user()->default_role === 'Secretary') {
